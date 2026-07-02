@@ -20,3 +20,44 @@ Content-Type: application/json
 GET http://localhost:5000/perfil
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzgwMDE3NDI2LCJleHAiOjE3ODAwMjEwMjZ9.30uG-iw430jzvEefdTgwUKVAUN-wG90-NWO65jNtOOA
 
+###
+
+// GET Produtos (aceita ?q= para busca por nome)
+GET http://localhost:5000/produtos
+
+###
+
+// GET Produto por id
+GET http://localhost:5000/produtos/1
+
+###
+
+// POST Produto
+POST http://localhost:5000/produtos
+Content-Type: application/json
+
+{
+    "nome": "Teclado mecânico",
+    "descricao": "Switches azuis, ABNT2",
+    "preco": 249.90,
+    "quantidade": 10
+}
+
+###
+
+// PUT Produto
+PUT http://localhost:5000/produtos/1
+Content-Type: application/json
+
+{
+    "nome": "Teclado mecânico",
+    "descricao": "Switches azuis, ABNT2",
+    "preco": 219.90,
+    "quantidade": 8
+}
+
+###
+
+// DELETE Produto
+DELETE http://localhost:5000/produtos/1
+

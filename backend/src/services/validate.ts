@@ -4,10 +4,7 @@ import { ZodError, ZodObject} from 'zod'
 export const validate = (schema: ZodObject) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      throw new Error('Teste de mensagem!!!')
-
       await schema.parseAsync(req.body)
-      throw new Error('Teste de mensagem!!!')
       next()
     } catch (error) {
       if(error instanceof ZodError){
