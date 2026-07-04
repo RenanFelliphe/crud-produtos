@@ -4,6 +4,7 @@ import { login } from './controllers/authController'
 import { AuthRequest, verifyJWT } from './middleware/authMiddleware'
 import z from 'zod'
 import { validate } from './services/validate'
+import { getProducts, getProductById, createProduct, updateProduct, deleteProduct } from './controllers/productController'
 
 const app = express()
 const PORT = 5000
@@ -47,6 +48,15 @@ app.get('/users', (req, res) => {
         }
     })
 })
+
+app.get('/produtos', getProducts)
+app.get('/produtos/:id', getProductById)
+
+app.post('/produtos', createProduct)
+
+app.put('/produtos/:id', updateProduct)
+
+app.delete('/produtos/:id', deleteProduct)
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`)
