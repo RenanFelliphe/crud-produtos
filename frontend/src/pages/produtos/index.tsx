@@ -1,6 +1,8 @@
 import { api } from "@/api/axiosInstance";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AxiosError } from "axios";
-import { Eye, Pencil, Trash } from "lucide-react";
+import { Eye, Pencil, PlusCircle, Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -24,44 +26,91 @@ export default function Produtos() {
     getProducts()
   }, []);
 
-  const handleGetProduct = (productId: string) => { router.push(`/produtos/${productId}`) }
-  const handleEditProduct = () => { }
-  const handleDeleteProduct = () => { }
+  const handleEditProduct = (productId: string) => { router.push(`/produtos/${productId}`) }
+
+  const handleDeleteProduct = async (productId: string) => {
+
+    try {
+      const response = await api.delete(`/produtos/${productId}`)
+      console.log('DELETAR', response)
+      const removeProductFromState = produtos.filter(prod => prod.id !== productId)
+      setProdutos(removeProductFromState)
+    } catch (error) {
+      if (error instanceof AxiosError) return console.warn(error?.response?.data)
+
+      console.log(error)
+    }
+  }
+  const handleAddNewProduct = () => {
+    router.push('/produtos/novo')
+  }
+
+  const DeleteProduct = ({ nome, id }: { nome: string, id: string }) => {
+
+    return (
+      <Dialog>
+        <DialogTrigger><Trash className="text-zinc-400 hover:text-zinc-100" /></DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Você tem certeza?</DialogTitle>
+            <DialogDescription>
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente o produto <b>{nome}</b>.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="items-left">
+            <DialogClose>
+              <Button variant={"link"}>Não</Button>
+            </DialogClose>
+            <DialogClose>
+              <Button onClick={() => handleDeleteProduct(id)}>Sim</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    )
+  }
 
   return (
     <>
       {/* TODO: link para a página de cadastro (/produtos/novo) */}
-      <div className="w-full h-screen flex items-center justify-center">
-        <table>
-          <thead className="p-2">
-            <tr>
-              <th>Id</th>
-              <th>Nome</th>
-              <th>Descrição</th>
-              <th>Quantidade</th>
-              <th>Preço</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {produtos.map(produto => (
-              <tr key={produto.id}>
-                <td>{produto.id}</td>
-                <td>{produto.nome}</td>
-                <td>{produto.descricao}</td>
-                <td>{produto.quantidade}</td>
-                <td>{produto.preco}</td>
-                <td>
-                  <div className="flex gap-2">
-                    <button onClick={() => handleGetProduct(produto.id)}><Eye className="text-zinc-400 hover:text-zinc-100" /></button>
-                    <button onClick={handleEditProduct}><Pencil className="text-zinc-400 hover:text-zinc-100" /></button>
-                    <button onClick={handleDeleteProduct}><Trash className="text-zinc-400 hover:text-zinc-100" /></button>
-                  </div>
-                </td>
+      <div className="flex h-screen items-center justify-center">
+        <div className="max-w-4xl h-screen flex flex-col items-center justify-center gap-8">
+          <div className="flex w-full items-center justify-end">
+            <button className="flex gap-2 border border-zinc-300 px-4 py-2 rounded-md hover:bg-zinc-200 hover:text-zinc-900  hover:border-zinc-400" onClick={handleAddNewProduct}>Adicionar novo produto <PlusCircle /></button>
+          </div>
+          <table>
+            <thead className="p-2 border-b-2 border-zinc-300">
+              <tr>
+                <th className="px-4">Id</th>
+                <th className="px-4">Nome</th>
+                <th className="px-4">Descrição</th>
+                <th className="px-4">Quantidade</th>
+                <th className="px-4">Preço</th>
+                <th className="px-4">Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {produtos.map(produto => {
+                const priceAdjusted = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(produto.preco)
+                return (
+                  <tr key={produto.id}>
+                    <td className="px-4">{produto.id}</td>
+                    <td className="px-4">{produto.nome}</td>
+                    <td className="px-4">{produto.descricao}</td>
+                    <td className="px-4 text-center">{produto.quantidade}</td>
+                    <td className="px-4">{priceAdjusted}</td>
+                    <td>
+                      <div className="flex gap-2 items-center justify-end">
+                        <button onClick={() => handleEditProduct(produto.id)}><Pencil className="text-zinc-400 hover:text-zinc-100" /></button>
+                        <DeleteProduct id={produto.id} nome={produto.nome} />
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* TODO: tabela listando os produtos (nome, preco, quantidade) */}
