@@ -46,7 +46,7 @@ Content-Type: application/json
     "nome": "Teclado mecânico",
     "descricao": "Switches azuis, ABNT2",
     "preco": 249.90,
-    "quantidade": 0
+    "quantidade": 2
 }
 
 ###

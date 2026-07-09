@@ -72,16 +72,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Produto não encontrado !" })
     }
 
-    res.status(200).json({ message: "Dados atualizados com sucesso !" })
-    // Se não encontrar, retornar 404
-    const id = req.params.id as string
-
-    await db('produtos').update({
-        'nome': req.body.nome,
-        'descricao': req.body.descricao,
-        'preco': req.body.preco,
-        'quantidade': req.body.quantidade,
-    }).where({'id': id})
+    return res.status(200).json({ message: "Dados atualizados com sucesso !" })
 }
 
 // DELETE /produtos/:id
