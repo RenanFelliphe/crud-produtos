@@ -6,10 +6,18 @@ import { Eye, Pencil, PlusCircle, Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+interface Produto {
+  id: string
+  nome: string
+  descricao: string
+  quantidade: number
+  preco: number
+}
+
 export default function Produtos() {
   const router = useRouter()
   // TODO: estado para guardar a lista de produtos vinda da API
-  const [produtos, setProdutos] = useState([])
+  const [produtos, setProdutos] = useState<Produto[]>([])
 
   useEffect(() => {
     // TODO: buscar os produtos (GET /produtos) ao carregar a página
